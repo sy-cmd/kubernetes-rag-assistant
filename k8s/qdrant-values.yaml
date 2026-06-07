@@ -1,0 +1,21 @@
+image:
+  repository: qdrant/qdrant
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 6333
+  grpcPort: 6334
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: "default"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
