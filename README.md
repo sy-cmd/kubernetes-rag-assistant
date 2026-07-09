@@ -40,10 +40,15 @@ This project provides:
 
 ## Quick Start
 
-### 1. Install dependencies
 
+### 1. Create a clean virtual environment right inside this folder:
++ cd projects/rag-knowledge-base
++ python3 -m venv .venv
+#### Activate your new virtual environment:
++ source .venv/bin/activate
+#### Install dependencies
 ```bash
-cd projects/rag-knowledge-base
+
 pip install -r requirements.txt
 ```
 
