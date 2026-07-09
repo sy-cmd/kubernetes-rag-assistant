@@ -41,36 +41,46 @@ This project provides:
 ## Quick Start
 
 
-### 1. Create a clean virtual environment right inside this folder:
-+ cd projects/rag-knowledge-base
-+ python3 -m venv .venv
-#### Activate your new virtual environment:
-+ source .venv/bin/activate
-#### Install dependencies
-```bash
+### 1. Create a clean virtual environment
 
+```bash
+cd projects/rag-knowledge-base
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 2. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Set environment variable
+### 3. Configure environment
 
 ```bash
-export GROQ_API_KEY="your-api-key"
+cp .env.example .env
+# Edit .env and set your GROQ_API_KEY and other variables
 ```
 
-### 3. Start Qdrant (local or Docker)
+### 4. Start Qdrant (local or Docker)
 
 ```bash
 docker run -d -p 6333:6333 -p 6334:6334 qdrant/qdrant
 ```
 
-### 4. Ingest documents
+### 5. Start the API server
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+### 6. Ingest documents
 
 ```bash
 curl -X POST http://localhost:8000/ingest
 ```
 
-### 5. Query
+### 7. Query
 
 ```bash
 curl -X POST http://localhost:8000/query \
@@ -78,7 +88,7 @@ curl -X POST http://localhost:8000/query \
   -d '{"question": "How do I troubleshoot high CPU on a node?"}'
 ```
 
-### 6. CLI chatbot
+### 8. CLI chatbot
 
 ```bash
 # Single query
