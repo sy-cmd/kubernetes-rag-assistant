@@ -3,6 +3,7 @@ from typing import List
 from langchain_qdrant import QdrantVectorStore
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.schema import Document
+from qdrant_client import QdrantClient
 
 from app.config import settings
 
@@ -14,10 +15,10 @@ def get_embedding_model():
 def retrieve_chunks(question: str, top_k: int = 5) -> List[Document]:
     embedding_model = get_embedding_model()
 
+    client = QdrantClient(url=settings.qdrant_url)
     vector_store = QdrantVectorStore(
-        client=None,
+        client=client,
         embedding=embedding_model,
-        url=settings.qdrant_url,
         collection_name=settings.qdrant_collection
     )
 
