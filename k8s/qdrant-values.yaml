@@ -1,6 +1,6 @@
 image:
   repository: qdrant/qdrant
-  tag: latest
+  tag: "v1.10.0"
 
 service:
   type: ClusterIP
