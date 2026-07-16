@@ -5,7 +5,7 @@ docsHostPath: /home/fwalanga/workstation/sy
 image:
   repository: syfalanga/rag-knowledge-base
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 # Set via --set groqApiKey=... at install time — do not commit a real key here.
 groqApiKey: ""
