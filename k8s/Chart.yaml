@@ -1,0 +1,6 @@
+apiVersion: v2
+name: rag-knowledge-base
+description: RAG chatbot for Kubernetes/k3s documentation Q&A
+type: application
+version: 0.1.0
+appVersion: "1.0"

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rag-app
-  namespace: rag-system
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: rag-app
-        image: rag-knowledge-base:latest
-        imagePullPolicy: IfNotPresent
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8000
           name: http
@@ -31,11 +31,11 @@ spec:
               key: GROQ_API_KEY
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
           limits:
-            cpu: 1000m
-            memory: 1Gi
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
         livenessProbe:
           httpGet:
             path: /health
@@ -48,3 +48,12 @@ spec:
             port: 8000
           initialDelaySeconds: 5
           periodSeconds: 10
+        volumeMounts:
+        - name: docs
+          mountPath: /docs
+          readOnly: true
+      volumes:
+      - name: docs
+        hostPath:
+          path: {{ .Values.docsHostPath }}
+          type: Directory

@@ -15,6 +15,10 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    environment:
+      - DOCS_PATH=/docs
+    volumes:
+      - ${DOCS_PATH}:/docs:ro
     depends_on:
       - qdrant
 

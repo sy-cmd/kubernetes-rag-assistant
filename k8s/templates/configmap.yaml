@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag-app-config
+  namespace: {{ .Release.Namespace }}
+data:
+  QDRANT_URL: {{ .Values.qdrant.url | quote }}
+  QDRANT_COLLECTION: {{ .Values.qdrant.collection | quote }}
+  DOCS_PATH: "/docs"
+  EMBEDDING_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+  CHAT_MODEL: {{ .Values.chatModel | quote }}
+  CHUNK_SIZE: {{ .Values.chunkSize | quote }}
+  CHUNK_OVERLAP: {{ .Values.chunkOverlap | quote }}

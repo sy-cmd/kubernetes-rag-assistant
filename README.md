@@ -100,27 +100,35 @@ python -m app.cli -i
 
 ## Kubernetes Deployment
 
-### 1. Add Helm repo and deploy Qdrant
+`k8s/` is a Helm chart — [k8s/values.yaml](k8s/values.yaml) is the single place that drives every environment-specific value (docs path, image, Groq model, resource limits, etc.), so deploying on a different machine only means overriding a few `--set` flags, not editing YAML across multiple files.
+
+### 1. Create the namespace
+
+```bash
+kubectl create namespace rag-system
+```
+
+### 2. Deploy Qdrant
 
 ```bash
 helm repo add qdrant https://qdrant.github.io/qdrant-helm
 helm install qdrant qdrant/qdrant -n rag-system -f k8s/qdrant-values.yaml
 ```
 
-### 2. Apply Kubernetes manifests
+### 3. Deploy the app
 
 ```bash
-kubectl apply -f k8s/namespace.yaml
-kubectl apply -f k8s/configmap.yaml
-kubectl apply -f k8s/secret.yaml
-kubectl apply -f k8s/deployment.yaml
-kubectl apply -f k8s/service.yaml
+helm install rag-app ./k8s -n rag-system \
+  --set groqApiKey=<your-groq-api-key> \
+  --set docsHostPath=/path/to/your/docs \
+  --set image.repository=<your-dockerhub-username>/rag-knowledge-base
 ```
 
-### 3. Update secret with your Groq API key
+`docsHostPath` is the value most people need to change — it's a `hostPath` mount, so it must point to a real directory on the Kubernetes **node's** filesystem (not your laptop, unless that's also the node). `image.repository` should match whatever your [CI/CD](#cicd) workflow publishes to. See [k8s/values.yaml](k8s/values.yaml) for the full list of configurable values.
 
+To apply changes later (new image, new docs path, etc.):
 ```bash
-kubectl edit secret rag-app-secret -n rag-system
+helm upgrade rag-app ./k8s -n rag-system --set ...
 ```
 
 ### 4. Ingest docs
@@ -136,6 +144,17 @@ curl -X POST http://<node-ip>:30080/query \
   -H "Content-Type: application/json" \
   -d '{"question": "How do I list all pods?"}'
 ```
+
+## CI/CD
+
+[.github/workflows/docker-publish.yml](.github/workflows/docker-publish.yml) builds the Docker image and pushes it to Docker Hub as `<dockerhub-username>/rag-knowledge-base:latest` and `:<short-sha>` on every push to `main`, or on demand via the "Run workflow" button in the Actions tab.
+
+Requires two repo secrets (**Settings → Secrets and variables → Actions**):
+
+| Secret | Value |
+|--------|-------|
+| `DOCKERHUB_USERNAME` | Your Docker Hub username |
+| `DOCKERHUB_TOKEN` | A Docker Hub access token (Account Settings → Security → New Access Token) |
 
 ## API Endpoints
 
@@ -158,13 +177,18 @@ rag-knowledge-base/
 │   ├── models.py        # Pydantic models
 │   ├── main.py          # FastAPI server
 │   └── cli.py           # CLI chatbot
-├── k8s/
-│   ├── namespace.yaml
-│   ├── qdrant-values.yaml
-│   ├── configmap.yaml
-│   ├── secret.yaml
-│   ├── deployment.yaml
-│   └── service.yaml
+├── k8s/                  # Helm chart for the app
+│   ├── Chart.yaml
+│   ├── values.yaml       # single place to override docs path, image, resources, etc.
+│   ├── qdrant-values.yaml  # values for the separate Qdrant chart
+│   └── templates/
+│       ├── configmap.yaml
+│       ├── secret.yaml
+│       ├── deployment.yaml
+│       └── service.yaml
+├── .github/
+│   └── workflows/
+│       └── docker-publish.yml
 ├── tests/
 │   └── test_rag.py
 ├── Dockerfile
@@ -181,7 +205,7 @@ Environment variables (or `.env` file):
 | `GROQ_API_KEY` | Required | Groq API key |
 | `QDRANT_URL` | http://qdrant:6333 | Qdrant server URL |
 | `QDRANT_COLLECTION` | k3s-docs | Collection name |
-| `DOCS_PATH` | /home/sydney/Workstation/kubenetes/k3s | Docs source path |
+| `DOCS_PATH` | (see `.env.example`) | Docs source path — for Kubernetes this is set via the Helm chart's `docsHostPath` value instead, see [Kubernetes Deployment](#kubernetes-deployment) |
 | `CHAT_MODEL` | llama-3.1-8b-instant | Groq chat model |
 
 ## Development

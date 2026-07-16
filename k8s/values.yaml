@@ -1,0 +1,30 @@
+# Path on the Kubernetes node's filesystem where your source docs live.
+# This is the one value most users need to change.
+docsHostPath: /home/fwalanga/workstation/sy
+
+image:
+  repository: syfalanga/rag-knowledge-base
+  tag: latest
+  pullPolicy: Always
+
+# Set via --set groqApiKey=... at install time — do not commit a real key here.
+groqApiKey: ""
+
+qdrant:
+  url: http://qdrant:6333
+  collection: k3s-docs
+
+chatModel: llama-3.1-8b-instant
+chunkSize: 500
+chunkOverlap: 50
+
+service:
+  nodePort: 30080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
