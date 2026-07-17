@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 
-from app.models import QueryRequest, QueryResponse, IngestResponse
+from app.models import QueryRequest, QueryResponse, IngestResponse, ClusterQueryRequest, ClusterQueryResponse
 from app.query import query_rag
 from app.ingestion import ingest_documents
+from app.cluster_agent import query_cluster
 
 app = FastAPI(title="k3s RAG Knowledge Base", version="1.0.0")
 
@@ -39,6 +40,15 @@ async def query(request: QueryRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Query failed: {str(e)}")
+
+
+@app.post("/cluster/query", response_model=ClusterQueryResponse)
+async def cluster_query(request: ClusterQueryRequest):
+    try:
+        answer, tools_used = query_cluster(request.question)
+        return ClusterQueryResponse(answer=answer, tools_used=tools_used)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Cluster query failed: {str(e)}")
 
 
 if __name__ == "__main__":

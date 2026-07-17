@@ -13,6 +13,7 @@ spec:
       labels:
         app: rag-app
     spec:
+      serviceAccountName: rag-app
       containers:
       - name: rag-app
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

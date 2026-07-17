@@ -162,7 +162,16 @@ Requires two repo secrets (**Settings → Secrets and variables → Actions**):
 |--------|----------|-------------|
 | GET | `/health` | Health check |
 | POST | `/ingest` | Re-ingest documents |
-| POST | `/query` | Ask a question |
+| POST | `/query` | Ask a question about the k3s docs |
+| POST | `/cluster/query` | Ask about live cluster state, e.g. "why is rag-app down?" |
+
+`/cluster/query` takes `{"question": "..."}` and returns `{"answer": "...", "tools_used": [...]}`. It's backed by a tool-calling agent ([app/cluster_agent.py](app/cluster_agent.py)) with read-only Kubernetes access ([app/cluster_tools.py](app/cluster_tools.py)) — it can list pods, describe a pod's status/events, and read pod logs, but has no permission to create, modify, or delete anything (enforced both by the tools themselves and by the ClusterRole in [k8s/templates/rbac.yaml](k8s/templates/rbac.yaml), scoped cluster-wide but strictly to `get`/`list`/`watch`).
+
+```bash
+curl -X POST http://<node-ip>:30080/cluster/query \
+  -H "Content-Type: application/json" \
+  -d '{"question": "why is the rag-app pod not starting?"}'
+```
 
 ## Project Structure
 
@@ -174,6 +183,8 @@ rag-knowledge-base/
 │   ├── ingestion.py     # Document loading and indexing
 │   ├── retrieval.py     # Vector search
 │   ├── query.py         # RAG query chain
+│   ├── cluster_tools.py # Read-only Kubernetes tools (list/describe pods, logs)
+│   ├── cluster_agent.py # Tool-calling agent for /cluster/query
 │   ├── models.py        # Pydantic models
 │   ├── main.py          # FastAPI server
 │   └── cli.py           # CLI chatbot
@@ -184,6 +195,7 @@ rag-knowledge-base/
 │   └── templates/
 │       ├── configmap.yaml
 │       ├── secret.yaml
+│       ├── rbac.yaml       # ServiceAccount + read-only ClusterRole for cluster_tools.py
 │       ├── deployment.yaml
 │       └── service.yaml
 ├── .github/

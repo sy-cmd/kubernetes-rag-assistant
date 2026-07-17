@@ -23,3 +23,12 @@ class IngestResponse(BaseModel):
     status: str
     chunks_indexed: int
     documents_processed: int
+
+
+class ClusterQueryRequest(BaseModel):
+    question: str
+
+
+class ClusterQueryResponse(BaseModel):
+    answer: str
+    tools_used: List[str]
