@@ -6,6 +6,7 @@ A Retrieval-Augmented Generation (RAG) system for k3s documentation Q&A.
 
 This project provides:
 - **REST API** for querying k3s documentation
+- **Web UI** for chatting with either the docs Q&A or the cluster-troubleshooting agent
 - **CLI chatbot** for interactive Q&A
 - **Re-ingest capability** to update document index
 
@@ -160,10 +161,13 @@ Requires two repo secrets (**Settings → Secrets and variables → Actions**):
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| GET | `/` | Chat UI (docs Q&A + cluster agent) |
 | GET | `/health` | Health check |
 | POST | `/ingest` | Re-ingest documents |
 | POST | `/query` | Ask a question about the k3s docs |
 | POST | `/cluster/query` | Ask about live cluster state, e.g. "why is rag-app down?" |
+
+Open `http://<node-ip>:30080/` (or `http://localhost:8000/` locally) for a simple chat interface — a mode toggle switches between the two endpoints above.
 
 `/cluster/query` takes `{"question": "..."}` and returns `{"answer": "...", "tools_used": [...]}`. It's backed by a tool-calling agent ([app/cluster_agent.py](app/cluster_agent.py)) with read-only Kubernetes access ([app/cluster_tools.py](app/cluster_tools.py)) — it can list pods, describe a pod's status/events, and read pod logs, but has no permission to create, modify, or delete anything (enforced both by the tools themselves and by the ClusterRole in [k8s/templates/rbac.yaml](k8s/templates/rbac.yaml), scoped cluster-wide but strictly to `get`/`list`/`watch`).
 
@@ -187,7 +191,9 @@ rag-knowledge-base/
 │   ├── cluster_agent.py # Tool-calling agent for /cluster/query
 │   ├── models.py        # Pydantic models
 │   ├── main.py          # FastAPI server
-│   └── cli.py           # CLI chatbot
+│   ├── cli.py           # CLI chatbot
+│   └── static/
+│       └── index.html   # Web chat UI
 ├── k8s/                  # Helm chart for the app
 │   ├── Chart.yaml
 │   ├── values.yaml       # single place to override docs path, image, resources, etc.

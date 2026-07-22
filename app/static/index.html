@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>k3s RAG Knowledge Base</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bubble-user: #2563eb;
+    --bubble-user-fg: #ffffff;
+    --bubble-bot: #f3f4f6;
+    --bubble-bot-fg: #1a1a1a;
+    --accent: #2563eb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --fg: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #262b36;
+      --bubble-bot: #1c212b;
+      --bubble-bot-fg: #e5e7eb;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  header h1 { font-size: 1.05rem; margin: 0; font-weight: 600; }
+  .modes {
+    display: flex;
+    gap: 0.25rem;
+    background: var(--bubble-bot);
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+  }
+  .modes button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .modes button.active {
+    background: var(--accent);
+    color: white;
+  }
+  main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 780px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .msg { display: flex; flex-direction: column; gap: 0.35rem; max-width: 85%; }
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.bot { align-self: flex-start; align-items: flex-start; }
+  .bubble {
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.9rem;
+    white-space: pre-wrap;
+    line-height: 1.45;
+    font-size: 0.92rem;
+  }
+  .msg.user .bubble { background: var(--bubble-user); color: var(--bubble-user-fg); border-bottom-right-radius: 0.2rem; }
+  .msg.bot .bubble { background: var(--bubble-bot); color: var(--bubble-bot-fg); border-bottom-left-radius: 0.2rem; }
+  .meta { font-size: 0.72rem; color: var(--muted); padding: 0 0.2rem; }
+  .empty {
+    margin: auto;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    max-width: 320px;
+  }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+  }
+  form {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.6rem;
+  }
+  textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    border-radius: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    font-family: inherit;
+    font-size: 0.92rem;
+    max-height: 8rem;
+  }
+  textarea:focus, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  button.send {
+    border: none;
+    background: var(--accent);
+    color: white;
+    padding: 0 1.2rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  button.send:disabled { opacity: 0.5; cursor: default; }
+  .typing { display: flex; gap: 0.25rem; padding: 0.4rem 0; }
+  .typing span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted);
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .typing span:nth-child(2) { animation-delay: 0.15s; }
+  .typing span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 1; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>k3s RAG Knowledge Base</h1>
+  <div class="modes">
+    <button type="button" data-mode="docs" class="active">Docs Q&amp;A</button>
+    <button type="button" data-mode="cluster">Cluster Agent</button>
+  </div>
+</header>
+<main id="chat">
+  <div class="empty" id="empty-state">Ask a question about the k3s docs, or switch to Cluster Agent to ask about live pod status.</div>
+</main>
+<footer>
+  <form id="chat-form">
+    <textarea id="input" rows="1" placeholder="Ask about the k3s docs..." required></textarea>
+    <button type="submit" class="send" id="send-btn">Send</button>
+  </form>
+</footer>
+<script>
+  const chat = document.getElementById('chat');
+  const emptyState = document.getElementById('empty-state');
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('send-btn');
+  const modeButtons = document.querySelectorAll('.modes button');
+
+  let mode = 'docs';
+  const endpoints = {
+    docs: '/query',
+    cluster: '/cluster/query'
+  };
+
+  modeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      mode = btn.dataset.mode;
+      modeButtons.forEach(b => b.classList.toggle('active', b === btn));
+      input.placeholder = mode === 'docs'
+        ? 'Ask about the k3s docs...'
+        : 'Ask about live pod/cluster status...';
+    });
+  });
+
+  function addMessage(role, text) {
+    emptyState.remove();
+    const msg = document.createElement('div');
+    msg.className = `msg ${role}`;
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    msg.appendChild(bubble);
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+    return msg;
+  }
+
+  function addMeta(msg, text) {
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = text;
+    msg.appendChild(meta);
+  }
+
+  function addTyping() {
+    const msg = document.createElement('div');
+    msg.className = 'msg bot';
+    msg.id = 'typing';
+    msg.innerHTML = '<div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('typing');
+    if (el) el.remove();
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+
+    addMessage('user', question);
+    input.value = '';
+    input.style.height = 'auto';
+    sendBtn.disabled = true;
+    addTyping();
+
+    try {
+      const res = await fetch(endpoints[mode], {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+      const data = await res.json();
+      removeTyping();
+
+      if (!res.ok) {
+        addMessage('bot', data.detail || 'Something went wrong.');
+        return;
+      }
+
+      const botMsg = addMessage('bot', data.answer);
+      if (mode === 'docs' && data.sources && data.sources.length) {
+        addMeta(botMsg, `Sources: ${data.sources.join(', ')}`);
+      } else if (mode === 'cluster' && data.tools_used && data.tools_used.length) {
+        addMeta(botMsg, `Tools used: ${data.tools_used.join(', ')}`);
+      }
+    } catch (err) {
+      removeTyping();
+      addMessage('bot', 'Request failed: ' + err.message);
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  });
+
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 128) + 'px';
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
+</script>
+</body>
+</html>

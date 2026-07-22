@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.models import QueryRequest, QueryResponse, IngestResponse, ClusterQueryRequest, ClusterQueryResponse
 from app.query import query_rag
@@ -49,6 +50,9 @@ async def cluster_query(request: ClusterQueryRequest):
         return ClusterQueryResponse(answer=answer, tools_used=tools_used)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Cluster query failed: {str(e)}")
+
+
+app.mount("/", StaticFiles(directory="app/static", html=True), name="static")
 
 
 if __name__ == "__main__":
