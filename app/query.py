@@ -1,9 +1,7 @@
 from typing import Tuple
 
 from langchain_groq import ChatGroq
-from langchain.prompts import ChatPromptTemplate, PromptTemplate
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
+from langchain.prompts import ChatPromptTemplate
 
 from app.config import settings
 from app.retrieval import retrieve_chunks, format_sources
@@ -49,9 +47,6 @@ def query_rag(question: str, top_k: int = 5) -> Tuple[str, list, int]:
         return "I couldn't find relevant information in the documentation. Try rephrasing your question.", [], 0
 
     sources = format_sources(docs)
-
-    combine_docs_chain = create_stuff_documents_chain(llm, prompt)
-    retrieval_chain = create_retrieval_chain(combine_docs_chain, retriever=None)
 
     context = "\n\n".join([doc.page_content for doc in docs])
 
