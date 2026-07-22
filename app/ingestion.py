@@ -7,7 +7,7 @@ from langchain_groq import ChatGroq
 from langchain_qdrant import QdrantVectorStore
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
@@ -15,7 +15,7 @@ from app.config import settings
 
 
 def get_embedding_model():
-    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    return FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 
 
 def get_qdrant_client() -> QdrantClient:

@@ -1,7 +1,7 @@
 from typing import List
 
 from langchain_qdrant import QdrantVectorStore
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain.schema import Document
 from qdrant_client import QdrantClient
 
@@ -9,7 +9,7 @@ from app.config import settings
 
 
 def get_embedding_model():
-    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    return FastEmbedEmbeddings(model_name="BAAI/bge-small-en-v1.5")
 
 
 def retrieve_chunks(question: str, top_k: int = 5) -> List[Document]:

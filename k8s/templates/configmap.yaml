@@ -7,7 +7,7 @@ data:
   QDRANT_URL: {{ .Values.qdrant.url | quote }}
   QDRANT_COLLECTION: {{ .Values.qdrant.collection | quote }}
   DOCS_PATH: "/docs"
-  EMBEDDING_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+  EMBEDDING_MODEL: "BAAI/bge-small-en-v1.5"
   CHAT_MODEL: {{ .Values.chatModel | quote }}
   CHUNK_SIZE: {{ .Values.chunkSize | quote }}
   CHUNK_OVERLAP: {{ .Values.chunkOverlap | quote }}

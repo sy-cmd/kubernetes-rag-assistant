@@ -35,7 +35,7 @@ This project provides:
 ## Stack
 
 - **LLM**: Groq (llama-3.1-8b-instant)
-- **Embeddings**: HuggingFace (all-MiniLM-L6-v2)
+- **Embeddings**: fastembed (BAAI/bge-small-en-v1.5, ONNX runtime — no torch dependency)
 - **Vector DB**: Qdrant
 - **Framework**: LangChain + FastAPI
 
@@ -144,6 +144,12 @@ kubectl exec -it -n rag-system deploy/rag-app -- python -m app.ingestion
 curl -X POST http://<node-ip>:30080/query \
   -H "Content-Type: application/json" \
   -d '{"question": "How do I list all pods?"}'
+```
+
+Or open `http://<node-ip>:30080/` for the web chat UI, or use the CLI chatbot directly inside the running pod:
+
+```bash
+kubectl exec -it -n rag-system deploy/rag-app -- python -m app.cli -i
 ```
 
 ## CI/CD
