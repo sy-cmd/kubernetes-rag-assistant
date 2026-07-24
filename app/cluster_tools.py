@@ -46,6 +46,22 @@ def list_pods(namespace: str = "") -> str:
 
 
 @tool
+def list_namespaces() -> str:
+    """List all namespaces in the cluster. Use this when asked about namespaces directly -
+    never guess or infer a namespace count from a pod list or pod count."""
+    v1 = _core_v1()
+    try:
+        namespaces = v1.list_namespace().items
+    except ApiException as e:
+        return f"Error listing namespaces: {e.reason}"
+
+    if not namespaces:
+        return "No namespaces found."
+
+    return "\n".join(ns.metadata.name for ns in namespaces)
+
+
+@tool
 def describe_pod(name: str, namespace: str) -> str:
     """Get detailed status for a single pod: phase, conditions, container states
     (waiting/running/terminated reasons), and recent Kubernetes events for it.

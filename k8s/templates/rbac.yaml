@@ -10,7 +10,7 @@ metadata:
   name: rag-app-cluster-reader
 rules:
 - apiGroups: [""]
-  resources: ["pods", "events"]
+  resources: ["pods", "events", "namespaces"]
   verbs: ["get", "list", "watch"]
 - apiGroups: [""]
   resources: ["pods/log"]
