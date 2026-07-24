@@ -46,7 +46,8 @@ async def query(request: QueryRequest):
 @app.post("/cluster/query", response_model=ClusterQueryResponse)
 async def cluster_query(request: ClusterQueryRequest):
     try:
-        answer, tools_used = query_cluster(request.question)
+        history = [turn.model_dump() for turn in request.history]
+        answer, tools_used = query_cluster(request.question, history=history)
         return ClusterQueryResponse(answer=answer, tools_used=tools_used)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Cluster query failed: {str(e)}")

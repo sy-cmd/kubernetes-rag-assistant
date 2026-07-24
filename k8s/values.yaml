@@ -15,6 +15,7 @@ qdrant:
   collection: k3s-docs
 
 chatModel: llama-3.1-8b-instant
+clusterChatModel: llama-3.3-70b-versatile
 chunkSize: 500
 chunkOverlap: 50
 

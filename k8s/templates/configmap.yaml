@@ -9,5 +9,6 @@ data:
   DOCS_PATH: "/docs"
   EMBEDDING_MODEL: "BAAI/bge-small-en-v1.5"
   CHAT_MODEL: {{ .Values.chatModel | quote }}
+  CLUSTER_CHAT_MODEL: {{ .Values.clusterChatModel | quote }}
   CHUNK_SIZE: {{ .Values.chunkSize | quote }}
   CHUNK_OVERLAP: {{ .Values.chunkOverlap | quote }}

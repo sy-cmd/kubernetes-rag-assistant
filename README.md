@@ -75,6 +75,8 @@ docker run -d -p 6333:6333 -p 6334:6334 qdrant/qdrant
 uvicorn app.main:app --reload --port 8000
 ```
 
+Open `http://localhost:8000/` for the web chat UI — a mode toggle switches between docs Q&A and the cluster-troubleshooting agent, so you can skip the curl commands below if you'd rather just chat.
+
 ### 6. Ingest documents
 
 ```bash

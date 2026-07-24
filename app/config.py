@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     docs_path: str = "/home/sydney/Workstation/kubenetes/k3s"
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     chat_model: str = "llama-3.1-8b-instant"
+    cluster_chat_model: str = "llama-3.3-70b-versatile"
     chunk_size: int = 500
     chunk_overlap: int = 50
 

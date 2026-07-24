@@ -177,6 +177,7 @@
     docs: '/query',
     cluster: '/cluster/query'
   };
+  let clusterHistory = [];
 
   modeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -234,10 +235,14 @@
     addTyping();
 
     try {
+      const body = mode === 'cluster'
+        ? { question, history: clusterHistory }
+        : { question };
+
       const res = await fetch(endpoints[mode], {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question })
+        body: JSON.stringify(body)
       });
       const data = await res.json();
       removeTyping();
@@ -252,6 +257,11 @@
         addMeta(botMsg, `Sources: ${data.sources.join(', ')}`);
       } else if (mode === 'cluster' && data.tools_used && data.tools_used.length) {
         addMeta(botMsg, `Tools used: ${data.tools_used.join(', ')}`);
+      }
+
+      if (mode === 'cluster') {
+        clusterHistory.push({ role: 'user', content: question });
+        clusterHistory.push({ role: 'assistant', content: data.answer });
       }
     } catch (err) {
       removeTyping();

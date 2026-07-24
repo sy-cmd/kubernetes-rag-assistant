@@ -25,8 +25,14 @@ class IngestResponse(BaseModel):
     documents_processed: int
 
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
 class ClusterQueryRequest(BaseModel):
     question: str
+    history: List[ChatMessage] = []
 
 
 class ClusterQueryResponse(BaseModel):
