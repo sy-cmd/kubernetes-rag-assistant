@@ -123,9 +123,12 @@ helm install qdrant qdrant/qdrant -n rag-system -f k8s/qdrant-values.yaml
 ```bash
 helm install rag-app ./k8s -n rag-system \
   --set groqApiKey=<your-groq-api-key> \
+  --set minimaxApiKey=<your-minimax-api-key> \
   --set docsHostPath=/path/to/your/docs \
   --set image.repository=<your-dockerhub-username>/rag-knowledge-base
 ```
+
+Docs Q&A (`/query`) runs on Groq; the cluster-troubleshooting agent (`/cluster/query`) runs on MiniMax (`MiniMax-M3`, via its OpenAI-compatible API) — two separate keys, two separate providers, so a problem with one (rate limits, org restrictions) doesn't take down the other.
 
 `docsHostPath` is the value most people need to change — it's a `hostPath` mount, so it must point to a real directory on the Kubernetes **node's** filesystem (not your laptop, unless that's also the node). `image.repository` should match whatever your [CI/CD](#cicd) workflow publishes to. See [k8s/values.yaml](k8s/values.yaml) for the full list of configurable values.
 

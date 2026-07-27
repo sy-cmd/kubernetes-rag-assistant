@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 
 from langchain_core.messages import AIMessage, SystemMessage, HumanMessage, ToolMessage
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 
 from app.config import settings
 from app.cluster_tools import list_pods, describe_pod, get_pod_logs, list_namespaces
@@ -39,9 +39,10 @@ changed."""
 
 
 def get_llm():
-    return ChatGroq(
+    return ChatOpenAI(
         model=settings.cluster_chat_model,
-        api_key=settings.groq_api_key,
+        api_key=settings.minimax_api_key,
+        base_url=settings.minimax_base_url,
         temperature=0
     ).bind_tools(TOOLS)
 

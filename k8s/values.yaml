@@ -7,15 +7,17 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-# Set via --set groqApiKey=... at install time — do not commit a real key here.
+# Set via --set groqApiKey=... / --set minimaxApiKey=... at install time — do not commit real keys here.
 groqApiKey: ""
+minimaxApiKey: ""
+minimaxBaseUrl: https://api.minimax.io/v1
 
 qdrant:
   url: http://qdrant:6333
   collection: k3s-docs
 
 chatModel: llama-3.1-8b-instant
-clusterChatModel: llama-3.3-70b-versatile
+clusterChatModel: MiniMax-M3
 chunkSize: 500
 chunkOverlap: 50
 
