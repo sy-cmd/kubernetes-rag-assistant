@@ -30,6 +30,11 @@ spec:
             secretKeyRef:
               name: rag-app-secret
               key: GROQ_API_KEY
+        - name: MINIMAX_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-app-secret
+              key: MINIMAX_API_KEY
         resources:
           requests:
             cpu: {{ .Values.resources.requests.cpu }}
