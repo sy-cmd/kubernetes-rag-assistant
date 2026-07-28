@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional, Tuple
 
 from langchain_core.messages import AIMessage, SystemMessage, HumanMessage, ToolMessage
@@ -38,6 +39,10 @@ discussed), but always re-verify current state with tools rather than assuming i
 changed."""
 
 
+def _strip_thinking(content: str) -> str:
+    return re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL).strip()
+
+
 def get_llm():
     return ChatOpenAI(
         model=settings.cluster_chat_model,
@@ -69,7 +74,7 @@ def query_cluster(
         messages.append(response)
 
         if not response.tool_calls:
-            return response.content, tools_used
+            return _strip_thinking(response.content), tools_used
 
         for call in response.tool_calls:
             tools_used.append(call["name"])
