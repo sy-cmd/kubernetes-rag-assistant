@@ -16,7 +16,7 @@ async def health_check():
 
 
 @app.post("/ingest", response_model=IngestResponse)
-async def ingest():
+def ingest():
     try:
         chunks_indexed, docs_processed = ingest_documents()
         return IngestResponse(
@@ -31,7 +31,7 @@ async def ingest():
 
 
 @app.post("/query", response_model=QueryResponse)
-async def query(request: QueryRequest):
+def query(request: QueryRequest):
     try:
         answer, sources, chunks_used = query_rag(request.question, request.top_k)
         return QueryResponse(
@@ -44,7 +44,7 @@ async def query(request: QueryRequest):
 
 
 @app.post("/cluster/query", response_model=ClusterQueryResponse)
-async def cluster_query(request: ClusterQueryRequest):
+def cluster_query(request: ClusterQueryRequest):
     try:
         history = [turn.model_dump() for turn in request.history]
         answer, tools_used = query_cluster(request.question, history=history)
