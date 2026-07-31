@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     qdrant_collection: str = "k3s-docs"
     docs_path: str = "/home/sydney/Workstation/kubenetes/k3s"
     embedding_model: str = "BAAI/bge-small-en-v1.5"
-    chat_model: str = "llama-3.1-8b-instant"
+    chat_model: str = "MiniMax-M3"
     minimax_api_key: str = ""
     minimax_base_url: str = "https://api.minimax.io/v1"
     cluster_chat_model: str = "MiniMax-M3"

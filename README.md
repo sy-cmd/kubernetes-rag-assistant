@@ -128,7 +128,7 @@ helm install rag-app ./k8s -n rag-system \
   --set image.repository=<your-dockerhub-username>/rag-knowledge-base
 ```
 
-Docs Q&A (`/query`) runs on Groq; the cluster-troubleshooting agent (`/cluster/query`) runs on MiniMax (`MiniMax-M3`, via its OpenAI-compatible API) — two separate keys, two separate providers, so a problem with one (rate limits, org restrictions) doesn't take down the other.
+Both docs Q&A (`/query`) and the cluster-troubleshooting agent (`/cluster/query`) now run on MiniMax (`MiniMax-M3`, via its OpenAI-compatible API). `groqApiKey` is still accepted but no longer used by either path — see the note below if you want to remove it entirely.
 
 `docsHostPath` is the value most people need to change — it's a `hostPath` mount, so it must point to a real directory on the Kubernetes **node's** filesystem (not your laptop, unless that's also the node). `image.repository` should match whatever your [CI/CD](#cicd) workflow publishes to. See [k8s/values.yaml](k8s/values.yaml) for the full list of configurable values.
 

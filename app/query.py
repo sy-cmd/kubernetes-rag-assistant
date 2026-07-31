@@ -1,16 +1,22 @@
+import re
 from typing import Tuple
 
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 
 from app.config import settings
 from app.retrieval import retrieve_chunks, format_sources
 
 
+def _strip_thinking(content: str) -> str:
+    return re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL).strip()
+
+
 def get_llm():
-    return ChatGroq(
+    return ChatOpenAI(
         model=settings.chat_model,
-        api_key=settings.groq_api_key,
+        api_key=settings.minimax_api_key,
+        base_url=settings.minimax_base_url,
         temperature=0.3
     )
 
@@ -52,4 +58,4 @@ def query_rag(question: str, top_k: int = 5) -> Tuple[str, list, int]:
 
     response = llm.invoke(prompt.format(context=context, input=question))
 
-    return response.content, sources, len(docs)
+    return _strip_thinking(response.content), sources, len(docs)
