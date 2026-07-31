@@ -1,9 +1,9 @@
+
 from pydantic_settings import BaseSettings
 from typing import Optional
 
 
 class Settings(BaseSettings):
-    groq_api_key: str
     qdrant_url: str = "http://qdrant:6333"
     qdrant_collection: str = "k3s-docs"
     docs_path: str = "/home/sydney/Workstation/kubenetes/k3s"

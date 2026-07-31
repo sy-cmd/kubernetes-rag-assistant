@@ -3,7 +3,6 @@ import hashlib
 from pathlib import Path
 from typing import List, Tuple
 
-from langchain_groq import ChatGroq
 from langchain_qdrant import QdrantVectorStore
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter

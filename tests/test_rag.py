@@ -6,7 +6,7 @@ from app.config import settings
 
 class TestConfig:
     def test_settings_loaded(self):
-        assert settings.groq_api_key is not None
+        assert settings.minimax_api_key is not None
         assert settings.qdrant_url is not None
         assert settings.docs_path is not None
 

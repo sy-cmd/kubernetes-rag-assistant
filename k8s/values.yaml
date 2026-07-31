@@ -7,8 +7,7 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-# Set via --set groqApiKey=... / --set minimaxApiKey=... at install time — do not commit real keys here.
-groqApiKey: ""
+# Set via --set minimaxApiKey=... at install time — do not commit real keys here.
 minimaxApiKey: ""
 minimaxBaseUrl: https://api.minimax.io/v1
 

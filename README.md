@@ -27,14 +27,14 @@ This project provides:
                                               │
                                               v
                                          ┌─────────────┐
-                                         │    Groq     │
+                                         │   MiniMax   │
                                          │    LLM      │
                                          └─────────────┘
 ```
 
 ## Stack
 
-- **LLM**: Groq (llama-3.1-8b-instant)
+- **LLM**: MiniMax (MiniMax-M3, via its OpenAI-compatible API)
 - **Embeddings**: fastembed (BAAI/bge-small-en-v1.5, ONNX runtime — no torch dependency)
 - **Vector DB**: Qdrant
 - **Framework**: LangChain + FastAPI
@@ -60,7 +60,7 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env and set your GROQ_API_KEY and other variables
+# Edit .env and set your MINIMAX_API_KEY and other variables
 ```
 
 ### 4. Start Qdrant (local or Docker)
@@ -103,7 +103,7 @@ python -m app.cli -i
 
 ## Kubernetes Deployment
 
-`k8s/` is a Helm chart — [k8s/values.yaml](k8s/values.yaml) is the single place that drives every environment-specific value (docs path, image, Groq model, resource limits, etc.), so deploying on a different machine only means overriding a few `--set` flags, not editing YAML across multiple files.
+`k8s/` is a Helm chart — [k8s/values.yaml](k8s/values.yaml) is the single place that drives every environment-specific value (docs path, image, chat model, resource limits, etc.), so deploying on a different machine only means overriding a few `--set` flags, not editing YAML across multiple files.
 
 ### 1. Create the namespace
 
@@ -122,13 +122,12 @@ helm install qdrant qdrant/qdrant -n rag-system -f k8s/qdrant-values.yaml
 
 ```bash
 helm install rag-app ./k8s -n rag-system \
-  --set groqApiKey=<your-groq-api-key> \
   --set minimaxApiKey=<your-minimax-api-key> \
   --set docsHostPath=/path/to/your/docs \
   --set image.repository=<your-dockerhub-username>/rag-knowledge-base
 ```
 
-Both docs Q&A (`/query`) and the cluster-troubleshooting agent (`/cluster/query`) now run on MiniMax (`MiniMax-M3`, via its OpenAI-compatible API). `groqApiKey` is still accepted but no longer used by either path — see the note below if you want to remove it entirely.
+Both docs Q&A (`/query`) and the cluster-troubleshooting agent (`/cluster/query`) run on MiniMax (`MiniMax-M3`, via its OpenAI-compatible API).
 
 `docsHostPath` is the value most people need to change — it's a `hostPath` mount, so it must point to a real directory on the Kubernetes **node's** filesystem (not your laptop, unless that's also the node). `image.repository` should match whatever your [CI/CD](#cicd) workflow publishes to. See [k8s/values.yaml](k8s/values.yaml) for the full list of configurable values.
 
@@ -231,11 +230,13 @@ Environment variables (or `.env` file):
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `GROQ_API_KEY` | Required | Groq API key |
+| `MINIMAX_API_KEY` | Required | MiniMax API key |
+| `MINIMAX_BASE_URL` | https://api.minimax.io/v1 | MiniMax's OpenAI-compatible API base URL |
 | `QDRANT_URL` | http://qdrant:6333 | Qdrant server URL |
 | `QDRANT_COLLECTION` | k3s-docs | Collection name |
 | `DOCS_PATH` | (see `.env.example`) | Docs source path — for Kubernetes this is set via the Helm chart's `docsHostPath` value instead, see [Kubernetes Deployment](#kubernetes-deployment) |
-| `CHAT_MODEL` | llama-3.1-8b-instant | Groq chat model |
+| `CHAT_MODEL` | MiniMax-M3 | Chat model for docs Q&A |
+| `CLUSTER_CHAT_MODEL` | MiniMax-M3 | Chat model for the cluster-troubleshooting agent |
 
 ## Development
 
