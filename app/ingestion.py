@@ -118,7 +118,7 @@ def ingest_documents() -> Tuple[int, int]:
         embedding=embedding_model,
         url=settings.qdrant_url,
         collection_name=settings.qdrant_collection,
-        force_recreate=False
+        force_recreate=True
     )
 
     return len(chunks), len(documents)

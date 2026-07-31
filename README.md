@@ -95,10 +95,10 @@ curl -X POST http://localhost:8000/query \
 
 ```bash
 # Single query
-python -m app.cli "How do I restart a deployment?"
+python3 -m app.cli "How do I restart a deployment?"
 
 # Interactive mode
-python -m app.cli -i
+python3 -m app.cli -i
 ```
 
 ## Kubernetes Deployment
@@ -124,7 +124,7 @@ helm install qdrant qdrant/qdrant -n rag-system -f k8s/qdrant-values.yaml
 helm install rag-app ./k8s -n rag-system \
   --set minimaxApiKey=<your-minimax-api-key> \
   --set docsHostPath=/path/to/your/docs \
-  --set image.repository=<your-dockerhub-username>/rag-knowledge-base
+  --set image.repository=syfalanga/rag-knowledge-base:latest
 ```
 
 Both docs Q&A (`/query`) and the cluster-troubleshooting agent (`/cluster/query`) run on MiniMax (`MiniMax-M3`, via its OpenAI-compatible API).
@@ -153,7 +153,7 @@ curl -X POST http://<node-ip>:30080/query \
 Or open `http://<node-ip>:30080/` for the web chat UI, or use the CLI chatbot directly inside the running pod:
 
 ```bash
-kubectl exec -it -n rag-system deploy/rag-app -- python -m app.cli -i
+kubectl exec -it -n rag-system deploy/rag-app -- python3 -m app.cli -i
 ```
 
 ## CI/CD
