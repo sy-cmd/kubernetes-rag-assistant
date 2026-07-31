@@ -1,6 +1,6 @@
 # RAG Knowledge Base
 
-A Retrieval-Augmented Generation (RAG) system for k3s documentation Q&A.
+A Retrieval-Augmented Generation (RAG) system for k3s documentation Q&A and Cluster agent .
 
 ## Overview
 
