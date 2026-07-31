@@ -20,6 +20,9 @@ clusterChatModel: MiniMax-M3
 chunkSize: 500
 chunkOverlap: 50
 
+# Cron schedule for the daily kubernetes.io docs sync (see k8s/templates/cronjob.yaml)
+docsSyncSchedule: "0 3 * * *"
+
 service:
   nodePort: 30080
 

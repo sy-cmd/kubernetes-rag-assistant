@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sync-k8s-docs
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.docsSyncSchedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: sync-k8s-docs
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            command: ["python", "-m", "app.sync_docs"]
+            envFrom:
+            - configMapRef:
+                name: rag-app-config
+            env:
+            - name: MINIMAX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rag-app-secret
+                  key: MINIMAX_API_KEY
+            volumeMounts:
+            - name: docs
+              mountPath: /docs
+          restartPolicy: OnFailure
+          volumes:
+          - name: docs
+            hostPath:
+              path: {{ .Values.docsHostPath }}
+              type: Directory
