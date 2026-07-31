@@ -1,4 +1,4 @@
-# RAG Knowledge Base
+# K3ntinel
 
 A Retrieval-Augmented Generation (RAG) system for k3s documentation Q&A and Cluster agent .
 

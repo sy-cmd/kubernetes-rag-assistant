@@ -7,7 +7,7 @@ from app.query import query_rag
 from app.ingestion import ingest_documents
 from app.cluster_agent import query_cluster
 
-app = FastAPI(title="k3s RAG Knowledge Base", version="1.0.0")
+app = FastAPI(title="K3ntinel", version="1.0.0")
 
 
 @app.get("/health")
