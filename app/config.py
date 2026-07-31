@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     docs_path: str = "/home/sydney/Workstation/kubenetes/k3s"
     embedding_model: str = "BAAI/bge-small-en-v1.5"
     chat_model: str = "MiniMax-M3"
-    minimax_api_key: str = ""
+    minimax_api_key: str
     minimax_base_url: str = "https://api.minimax.io/v1"
     cluster_chat_model: str = "MiniMax-M3"
     chunk_size: int = 500
