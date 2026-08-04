@@ -13,7 +13,6 @@ This project provides:
 
 ## Architecture
 
-## Architecture
 
 ![K3ntinel architecture](doc/architecture.svg)`
 
