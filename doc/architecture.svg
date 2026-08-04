@@ -1,0 +1,121 @@
+<svg width="900" height="420" viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ============ Section labels ============ -->
+  <text x="450" y="24" text-anchor="middle" font-size="13" fill="#6B7280">Ingestion</text>
+  <text x="450" y="248" text-anchor="middle" font-size="13" fill="#6B7280">Query</text>
+
+  <!-- ============ Row 1: Ingestion ============ -->
+  <!-- Card: k3s docs -->
+  <g>
+    <rect x="60" y="40" width="170" height="96" rx="12" fill="#F8F9FB" stroke="#D0D5DD" stroke-width="1"/>
+    <g transform="translate(133,58)" stroke="#374151" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M4 2 H16 L22 8 V28 H4 Z"/>
+      <path d="M16 2 V8 H22"/>
+      <line x1="8" y1="16" x2="18" y2="16"/>
+      <line x1="8" y1="21" x2="18" y2="21"/>
+    </g>
+    <text x="145" y="108" text-anchor="middle" font-size="14" font-weight="600" fill="#1F2937">k3s docs</text>
+  </g>
+
+  <line x1="230" y1="88" x2="278" y2="88" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Card: Ingestion pipeline -->
+  <g>
+    <rect x="280" y="40" width="170" height="96" rx="12" fill="#F8F9FB" stroke="#D0D5DD" stroke-width="1"/>
+    <g transform="translate(353,58)" stroke="#374151" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 14 A10 10 0 1 1 8 21"/>
+      <path d="M4 14 L4 7 M4 14 L11 14"/>
+    </g>
+    <text x="365" y="108" text-anchor="middle" font-size="14" font-weight="600" fill="#1F2937">Ingestion</text>
+    <text x="365" y="124" text-anchor="middle" font-size="14" font-weight="600" fill="#1F2937">pipeline</text>
+  </g>
+
+  <line x1="450" y1="88" x2="498" y2="88" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Card: Qdrant vector db (accent) -->
+  <g>
+    <rect x="500" y="40" width="170" height="96" rx="12" fill="#EFF3FB" stroke="#93B4E3" stroke-width="1"/>
+    <g transform="translate(573,56)" stroke="#1D4ED8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="12" cy="6" rx="10" ry="4"/>
+      <path d="M2 6 V24 A10 4 0 0 0 22 24 V6"/>
+      <path d="M2 15 A10 4 0 0 0 22 15"/>
+    </g>
+    <text x="585" y="108" text-anchor="middle" font-size="14" font-weight="600" fill="#1D4ED8">Qdrant</text>
+    <text x="585" y="124" text-anchor="middle" font-size="12" fill="#3B6BC9">vector db</text>
+  </g>
+
+  <!-- Down connector: Qdrant -> RAG chain -->
+  <path d="M585 136 V210" fill="none" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="608" y="176" font-size="12" fill="#6B7280">retrieval</text>
+
+  <!-- ============ Row 2: Query ============ -->
+  <!-- Card: User query -->
+  <g>
+    <rect x="20" y="264" width="160" height="96" rx="12" fill="#F8F9FB" stroke="#D0D5DD" stroke-width="1"/>
+    <g transform="translate(88,282)" stroke="#374151" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M2 4 H22 V18 H10 L4 24 V18 H2 Z"/>
+      <line x1="7" y1="9" x2="17" y2="9"/>
+      <line x1="7" y1="13.5" x2="14" y2="13.5"/>
+    </g>
+    <text x="100" y="332" text-anchor="middle" font-size="14" font-weight="600" fill="#1F2937">User query</text>
+  </g>
+
+  <line x1="180" y1="312" x2="218" y2="312" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Card: FastAPI server -->
+  <g>
+    <rect x="220" y="264" width="160" height="96" rx="12" fill="#F8F9FB" stroke="#D0D5DD" stroke-width="1"/>
+    <g transform="translate(288,282)" stroke="#374151" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="2" y="2" width="20" height="9" rx="2"/>
+      <rect x="2" y="15" width="20" height="9" rx="2"/>
+      <circle cx="6" cy="6.5" r="0.9" fill="#374151" stroke="none"/>
+      <circle cx="6" cy="19.5" r="0.9" fill="#374151" stroke="none"/>
+    </g>
+    <text x="300" y="332" text-anchor="middle" font-size="14" font-weight="600" fill="#1F2937">FastAPI</text>
+    <text x="300" y="348" text-anchor="middle" font-size="12" fill="#6B7280">server</text>
+  </g>
+
+  <line x1="380" y1="312" x2="418" y2="312" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Card: RAG chain (accent) -->
+  <g>
+    <rect x="420" y="264" width="170" height="96" rx="12" fill="#EFF3FB" stroke="#93B4E3" stroke-width="1"/>
+    <g transform="translate(492,282)" stroke="#1D4ED8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="4" cy="4" r="3"/>
+      <circle cx="4" cy="20" r="3"/>
+      <circle cx="22" cy="12" r="3"/>
+      <path d="M4 7 V13 A6 6 0 0 0 10 19 H19"/>
+      <path d="M4 17 V13"/>
+    </g>
+    <text x="505" y="332" text-anchor="middle" font-size="14" font-weight="600" fill="#1D4ED8">RAG chain</text>
+    <text x="505" y="348" text-anchor="middle" font-size="12" fill="#3B6BC9">retrieve + generate</text>
+  </g>
+
+  <line x1="590" y1="312" x2="628" y2="312" stroke="#9CA3AF" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Card: MiniMax LLM -->
+  <g>
+    <rect x="630" y="264" width="170" height="96" rx="12" fill="#F8F9FB" stroke="#D0D5DD" stroke-width="1"/>
+    <g transform="translate(703,282)" stroke="#374151" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="4" y="4" width="16" height="16" rx="2"/>
+      <line x1="9" y1="0" x2="9" y2="4"/>
+      <line x1="15" y1="0" x2="15" y2="4"/>
+      <line x1="9" y1="20" x2="9" y2="24"/>
+      <line x1="15" y1="20" x2="15" y2="24"/>
+      <line x1="0" y1="9" x2="4" y2="9"/>
+      <line x1="0" y1="15" x2="4" y2="15"/>
+      <line x1="20" y1="9" x2="24" y2="9"/>
+      <line x1="20" y1="15" x2="24" y2="15"/>
+    </g>
+    <text x="715" y="332" text-anchor="middle" font-size="14" font-weight="600" fill="#1F2937">MiniMax</text>
+    <text x="715" y="348" text-anchor="middle" font-size="12" fill="#6B7280">LLM</text>
+  </g>
+</svg>

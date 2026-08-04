@@ -1,6 +1,7 @@
 # K3ntinel
 
-A Retrieval-Augmented Generation (RAG) system for k3s documentation Q&A and Cluster agent .
+A Retrieval-Augmented Generation (RAG) system for k3s documentation Q&A and Cluster agent.
+Built to explore whether an LLM agent could safely reason about live cluster state not just answer static doc questions. The cluster-troubleshooting agent uses scoped read-only RBAC (get/list/watch only) rather than broad cluster-admin access, so it can help debug a broken pod without being able to touch anything.
 
 ## Overview
 
@@ -12,25 +13,9 @@ This project provides:
 
 ## Architecture
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Your k3s  │────>│  Ingestion  │────>│   Qdrant    │
-│   docs      │     │   Pipeline │     │  Vector DB  │
-└─────────────┘     └─────────────┘     └─────────────┘
-                                              │
-                                              v
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   User      │────>│   FastAPI   │────>│  RAG Chain  │
-│   Query     │     │   Server    │     │ (retrieve   │
-└─────────────┘     └─────────────┘     │  + generate)│
-                                         └─────────────┘
-                                              │
-                                              v
-                                         ┌─────────────┐
-                                         │   MiniMax   │
-                                         │    LLM      │
-                                         └─────────────┘
-```
+## Architecture
+
+![K3ntinel architecture](doc/architecture.svg)`
 
 ## Stack
 
